@@ -2,7 +2,7 @@
   "profiles": {
     "WebRequest": {
       "commandName": "Project",
-      "commandLineArgs": "1 http://httpstat.us/200"
+      "commandLineArgs": "1 http://httpstat.us/503"
     }
   }
 }

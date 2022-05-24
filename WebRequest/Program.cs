@@ -22,15 +22,15 @@ if (args.Length == 2)
 
         while (true)
         {
-            var code = await StatusCode(args[1]);
+            var response = await StatusCode(args[1]);
 
-            if (!code.Item2)
+            if (!response.Item2)
             {
-                Console.WriteLine("URL parsing error");
+                Console.WriteLine(response.Item1);
 
                 return;
             }
-            Console.WriteLine($"Checking '{args[1]}'. Result: {code.Item1}");
+            Console.WriteLine($"Checking '{args[1]}'. Result: {response.Item1}");
 
             await Task.Delay(delay * 1000);
         }
@@ -39,20 +39,22 @@ if (args.Length == 2)
         {
             try
             {
-                WebRequest request = (HttpWebRequest)WebRequest.Create(link);
-
-                request.Method = "GET";
-
-                using (var res = (HttpWebResponse)await request.GetResponseAsync())
+                using (HttpClient httpClient = new())
                 {
-                    return new Tuple<string, bool>("OK(200)", true);
-                }
-            }
-            catch (WebException ex)
-            {
-                var error = (int)((HttpWebResponse)ex.Response).StatusCode;
+                    using (var response = await httpClient.GetAsync(link))
+                    {
+                        var code = (int)response.StatusCode;
 
-                return new Tuple<string, bool>($"ERR({error})", true);
+                        switch (code)
+                        {
+                            case 200:
+                                return new Tuple<string, bool>("OK(200)", true);
+
+                            default:
+                                return new Tuple<string, bool>($"ERR({code})", true);
+                        }
+                    }
+                }
             }
             catch
             {
