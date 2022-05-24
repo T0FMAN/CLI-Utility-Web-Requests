@@ -6,7 +6,7 @@
 
 <b>Или:</b>
 
-<code>dotnet run (предустановленные в файле Properties/launchSettings.json аргументы командной строки)</code>
+<code>dotnet run (применятся предустановленные в файле Properties/launchSettings.json аргументы командной строки)</code>
 
 <b>Пример использования при сборке Release/Debug в папке:</b>
 
