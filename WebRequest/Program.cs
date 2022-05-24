@@ -12,7 +12,6 @@ if (args.Length == 2)
                 break;
             else
             {
-
                 Console.WriteLine("Неверно введеный параметр. Введите новое значение");
 
                 interval = Console.ReadLine()!;
