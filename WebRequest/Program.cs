@@ -45,15 +45,7 @@ if (args.Length == 2)
 
                 using (var res = (HttpWebResponse)await request.GetResponseAsync())
                 {
-                    var code = (int)res.StatusCode;
-
-                    switch (code)
-                    {
-                        case 200:
-                            return new Tuple<string, bool>("OK(200)", true);
-                        default:
-                            throw new WebException($"Error: {code}");
-                    }
+                    return new Tuple<string, bool>("OK(200)", true);
                 }
             }
             catch (WebException ex)
