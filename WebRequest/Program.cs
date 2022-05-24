@@ -1,8 +1,6 @@
 ﻿using System.Net;
 
-var main = true;
-
-while (main)
+while (true)
 {
     Console.WriteLine("Введите интервал в секундах..");
     var interval = Console.ReadLine();
@@ -24,10 +22,8 @@ while (main)
         Console.WriteLine(code);
 
         if (code == "URL parsing error")
-        {
-            main = false;
             return;
-        }
+
         await Task.Delay(Convert.ToInt32(interval) * 1000);
     }
 }
@@ -47,22 +43,23 @@ async Task<string> StatusCode(string link)
             switch (code)
             {
                 case 200:
-                    return "OK(200)";
+                    break;
                 default:
-                    return $"ERR({code})";
+                    throw new WebException($"Error: {code}");
             }
+
+            return "OK(200)";
         }
     }
-    catch (Exception exception)
+    catch (WebException ex)
     {
-        if (exception.Source == "System.Private.Uri")
-        {
-            return "URL parsing error";
-        }
-
-        var index = exception.Message.IndexOf(":")+1;
-        var error = exception.Message.Substring(index, 3);
+        var index = ex.Message.IndexOf(":") + 1;
+        var error = ex.Message.Substring(index, 3);
 
         return $"ERR({error})";
+    }
+    catch
+    {
+        return "URL parsing error";
     }
 }
