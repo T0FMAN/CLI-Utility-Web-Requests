@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "WebRequest": {
+      "commandName": "Project",
+      "commandLineArgs": "e https://www.youtube.com/"
+    }
+  }
+}

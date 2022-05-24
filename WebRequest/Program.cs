@@ -2,67 +2,73 @@
 
 if (args.Length == 2)
 {
-    var isTrueInterval = args[0].All(char.IsNumber);
-
-    string interval = string.Empty;
-
-    while (!isTrueInterval)
+    try
     {
-        Console.WriteLine("Неверно введеный параметр . Введите новое значение");
+        var isTrueInterval = args[0].All(char.IsNumber);
 
-        interval = Console.ReadLine()!;
+        var interval = args[0];
 
-        if (interval.All(char.IsNumber))
-            isTrueInterval = true;
-    }
-
-    while (true)
-    {
-        var code = await StatusCode(args[1]);
-
-        Console.WriteLine(code);
-
-        if (code == "URL parsing error")
-            return;
-
-        await Task.Delay(Convert.ToInt32(args[0]) * 1000);
-    }
-
-    async Task<string> StatusCode(string link)
-    {
-        try
+        while (!isTrueInterval)
         {
-            WebRequest request = (HttpWebRequest)WebRequest.Create(link);
+            Console.WriteLine("Неверно введеный параметр . Введите новое значение");
 
-            request.Method = "GET";
+            interval = Console.ReadLine()!;
 
-            using (var res = (HttpWebResponse)await request.GetResponseAsync())
+            if (interval.All(char.IsNumber))
+                isTrueInterval = true;
+        }
+
+        int delay = Convert.ToInt32(interval);
+
+        while (true)
+        {
+            var code = await StatusCode(args[1]);
+
+            Console.WriteLine(code);
+
+            if (code == "URL parsing error")
+                return;
+
+            await Task.Delay(delay * 1000);
+        }
+
+        async Task<string> StatusCode(string link)
+        {
+            try
             {
-                var code = (int)res.StatusCode;
+                WebRequest request = (HttpWebRequest)WebRequest.Create(link);
 
-                switch (code)
+                request.Method = "GET";
+
+                using (var res = (HttpWebResponse)await request.GetResponseAsync())
                 {
-                    case 200:
-                        break;
-                    default:
-                        throw new WebException($"Error: {code}");
-                }
+                    var code = (int)res.StatusCode;
 
-                return "OK(200)";
+                    switch (code)
+                    {
+                        case 200:
+                            break;
+                        default:
+                            throw new WebException($"Error: {code}");
+                    }
+
+                    return "OK(200)";
+                }
+            }
+            catch (WebException ex)
+            {
+                var index = ex.Message.IndexOf(":") + 1;
+                var error = ex.Message.Substring(index, 3);
+
+                return $"ERR({error})";
+            }
+            catch
+            {
+                return "URL parsing error";
             }
         }
-        catch (WebException ex)
-        {
-            var index = ex.Message.IndexOf(":") + 1;
-            var error = ex.Message.Substring(index, 3);
-
-            return $"ERR({error})";
-        }
-        catch
-        {
-            return "URL parsing error";
-        }
     }
+    catch { }
 }
 else
 {
