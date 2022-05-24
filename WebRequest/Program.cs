@@ -8,12 +8,15 @@ if (args.Length == 2)
 
         while (true)
         {
-            Console.WriteLine("Неверно введеный параметр. Введите новое значение");
-
-            interval = Console.ReadLine()!;
-
             if (interval.All(char.IsNumber))
                 break;
+            else
+            {
+
+                Console.WriteLine("Неверно введеный параметр. Введите новое значение");
+
+                interval = Console.ReadLine()!;
+            }
         }
 
         int delay = Convert.ToInt32(interval);
