@@ -4,18 +4,16 @@ if (args.Length == 2)
 {
     try
     {
-        var isTrueInterval = args[0].All(char.IsNumber);
-
         var interval = args[0];
 
-        while (!isTrueInterval)
+        while (true)
         {
-            Console.WriteLine("Неверно введеный параметр . Введите новое значение");
+            Console.WriteLine("Неверно введеный параметр. Введите новое значение");
 
             interval = Console.ReadLine()!;
 
             if (interval.All(char.IsNumber))
-                isTrueInterval = true;
+                break;
         }
 
         int delay = Convert.ToInt32(interval);
@@ -32,7 +30,7 @@ if (args.Length == 2)
             await Task.Delay(delay * 1000);
         }
 
-        async Task<string> StatusCode(string link)
+        static async Task<string> StatusCode(string link)
         {
             try
             {
@@ -47,12 +45,10 @@ if (args.Length == 2)
                     switch (code)
                     {
                         case 200:
-                            break;
+                            return "OK(200)";
                         default:
                             throw new WebException($"Error: {code}");
                     }
-
-                    return "OK(200)";
                 }
             }
             catch (WebException ex)
