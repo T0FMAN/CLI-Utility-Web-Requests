@@ -1,23 +1,24 @@
 ﻿using System.Net;
 
-while (true)
+if (args.Length == 2)
 {
-    Console.WriteLine("Введите интервал в секундах..");
-    var interval = Console.ReadLine();
+    var isTrueInterval = args[0].All(char.IsNumber);
 
-    while (interval?.All(char.IsNumber) != true)
+    string interval = string.Empty;
+
+    while (isTrueInterval != true)
     {
-        Console.WriteLine("Неверно введеный параметр. Введите новое значение");
+        Console.WriteLine("Неверно введеный параметр . Введите новое значение");
 
         interval = Console.ReadLine();
-    }
 
-    Console.WriteLine("Введите ссылку на ресурс..");
-    var link = Console.ReadLine();
+        if (interval.All(char.IsNumber))
+            isTrueInterval = true;
+    }
 
     while (true)
     {
-        var code = await StatusCode(link);
+        var code = await StatusCode(args[1]);
 
         Console.WriteLine(code);
 
@@ -26,40 +27,44 @@ while (true)
 
         await Task.Delay(Convert.ToInt32(interval) * 1000);
     }
-}
 
-async Task<string> StatusCode(string link)
-{
-    try
+    async Task<string> StatusCode(string link)
     {
-        WebRequest request = (HttpWebRequest)WebRequest.Create(link);
-
-        request.Method = "GET";
-
-        using (var res = (HttpWebResponse)await request.GetResponseAsync())
+        try
         {
-            var code = (int)res.StatusCode;
+            WebRequest request = (HttpWebRequest)WebRequest.Create(link);
 
-            switch (code)
+            request.Method = "GET";
+
+            using (var res = (HttpWebResponse)await request.GetResponseAsync())
             {
-                case 200:
-                    break;
-                default:
-                    throw new WebException($"Error: {code}");
-            }
+                var code = (int)res.StatusCode;
 
-            return "OK(200)";
+                switch (code)
+                {
+                    case 200:
+                        break;
+                    default:
+                        throw new WebException($"Error: {code}");
+                }
+
+                return "OK(200)";
+            }
+        }
+        catch (WebException ex)
+        {
+            var index = ex.Message.IndexOf(":") + 1;
+            var error = ex.Message.Substring(index, 3);
+
+            return $"ERR({error})";
+        }
+        catch
+        {
+            return "URL parsing error";
         }
     }
-    catch (WebException ex)
-    {
-        var index = ex.Message.IndexOf(":") + 1;
-        var error = ex.Message.Substring(index, 3);
-
-        return $"ERR({error})";
-    }
-    catch
-    {
-        return "URL parsing error";
-    }
+}
+else
+{
+    Console.WriteLine("Неверные аргументы");
 }
