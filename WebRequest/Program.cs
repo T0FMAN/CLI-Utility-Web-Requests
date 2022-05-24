@@ -6,7 +6,7 @@ if (args.Length == 2)
 
     string interval = string.Empty;
 
-    while (isTrueInterval != true)
+    while (!isTrueInterval)
     {
         Console.WriteLine("Неверно введеный параметр . Введите новое значение");
 
