@@ -2,7 +2,7 @@
   "profiles": {
     "WebRequest": {
       "commandName": "Project",
-      "commandLineArgs": "e https://www.youtube.com/"
+      "commandLineArgs": "2 https://www.youtube.com/"
     }
   }
 }
