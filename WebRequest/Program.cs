@@ -10,7 +10,7 @@ if (args.Length == 2)
     {
         Console.WriteLine("Неверно введеный параметр . Введите новое значение");
 
-        interval = Console.ReadLine();
+        interval = Console.ReadLine()!;
 
         if (interval.All(char.IsNumber))
             isTrueInterval = true;
@@ -25,7 +25,7 @@ if (args.Length == 2)
         if (code == "URL parsing error")
             return;
 
-        await Task.Delay(Convert.ToInt32(interval) * 1000);
+        await Task.Delay(Convert.ToInt32(args[0]) * 1000);
     }
 
     async Task<string> StatusCode(string link)
