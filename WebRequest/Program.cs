@@ -1,70 +1,66 @@
-﻿using System.Net;
-
+﻿/* 
+ * Start the program with only two specified command line arguments,
+ * else break program.
+ * Default settings (file at Properities/launchsettings.json): 
+ * - one-seconds interval
+ * - url destination: http://httpstat.us/503
+ * Response: ERROR 503
+ */
 if (args.Length == 2)
 {
-    try
+    var interval = args[0];
+    var url = args[1];
+
+    while (!interval.All(char.IsNumber))
     {
-        var interval = args[0];
+        Console.WriteLine("The specified interval value is not valid.. Try input again");
 
-        while (true)
+        interval = Console.ReadLine()!;
+    }
+
+    int delay = Convert.ToInt32(interval);
+
+    while (true)
+    {
+        var response = await StatusCode(url);
+
+        if (!response.Item2)
         {
-            if (interval.All(char.IsNumber))
-                break;
-            else
-            {
-                Console.WriteLine("Неверно введеный параметр. Введите новое значение");
+            Console.WriteLine(response.Item1);
 
-                interval = Console.ReadLine()!;
-            }
+            return;
         }
+        Console.WriteLine($"Checking '{url}'. Result: {response.Item1}");
 
-        int delay = Convert.ToInt32(interval);
+        await Task.Delay(delay * 1000);
+    }
 
-        while (true)
+    static async Task<Tuple<string, bool>> StatusCode(string url)
+    {
+        try
         {
-            var response = await StatusCode(args[1]);
-
-            if (!response.Item2)
+            using (var client = new HttpClient())
             {
-                Console.WriteLine(response.Item1);
-
-                return;
-            }
-            Console.WriteLine($"Checking '{args[1]}'. Result: {response.Item1}");
-
-            await Task.Delay(delay * 1000);
-        }
-
-        static async Task<Tuple<string, bool>> StatusCode(string link)
-        {
-            try
-            {
-                using (HttpClient httpClient = new())
+                using (var response = await client.GetAsync(url))
                 {
-                    using (var response = await httpClient.GetAsync(link))
+                    var code = (int)response.StatusCode;
+
+                    switch (code)
                     {
-                        var code = (int)response.StatusCode;
+                        case 200:
+                            return new Tuple<string, bool>("OK(200)", true);
 
-                        switch (code)
-                        {
-                            case 200:
-                                return new Tuple<string, bool>("OK(200)", true);
-
-                            default:
-                                return new Tuple<string, bool>($"ERR({code})", true);
-                        }
+                        default:
+                            return new Tuple<string, bool>($"ERR({code})", true);
                     }
                 }
             }
-            catch
-            {
-                return new Tuple<string, bool>("URL parsing error", false);
-            }
+        }
+        catch 
+        { 
+            return new Tuple<string, bool>("URL parsing error", false); 
         }
     }
-    catch { }
 }
 else
-{
-    Console.WriteLine("Неверные аргументы");
-}
+    Console.WriteLine("Invalid arguments");
