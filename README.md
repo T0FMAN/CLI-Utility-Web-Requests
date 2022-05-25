@@ -6,7 +6,7 @@
 
 <b>Или:</b>
 
-<code>dotnet run (предустановленные в файле Properties/launchSettings.json аргументы командной строки)</code>
+<code>dotnet run (применятся предустановленные в файле Properties/launchSettings.json аргументы командной строки)</code>
 
 <b>Пример использования при сборке Release/Debug в папке:</b>
 
@@ -20,6 +20,6 @@
 
 ![image](https://user-images.githubusercontent.com/67320747/170118758-7f500395-650b-460b-aac3-54ca2de6fe9f.png)
 
-<b>Результат невалидной сслыки:</b>
+<b>Результат невалидной ссылки (второго аргумента):</b>
 
 ![image](https://user-images.githubusercontent.com/67320747/170118917-33c807fc-ade0-43e2-bbdc-fb5c45289000.png)
